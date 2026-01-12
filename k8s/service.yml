@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sap-classes
+  namespace: sap-classes
+
+spec:
+  selector:
+    app: sap-classes # Selects the pods with the label "app: nginx"
+  type: ClusterIP # Exposes the service on a static port on each Node's IP
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
