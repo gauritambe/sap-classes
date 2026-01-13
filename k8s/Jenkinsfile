@@ -52,5 +52,18 @@ pipeline{
                 sh 'docker run -d --name frontend -p 80:80 gauriiitambe/sap-frontend:${date}'
             }
         }
+        stage('Deploy to Minikube') {
+            steps {
+                script {
+                    sh '''
+                        kubectl apply -f ./k8s/namespace.yml 
+                        kubectl apply -f ./k8s/deployment.yml 
+                        kubectl apply -f ./k8s/service.yml 
+                        kubectl get pods -w  # Wait and verify
+                        sudo -E kubectl port-forward service/sap-classes -n sap-classes 80:80
+                    '''
+                }
+            }
+        }
     }
 }
