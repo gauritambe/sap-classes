@@ -2,7 +2,6 @@ pipeline {
     agent any
     
     environment {
-        DATE = sh(script: 'date +%Y%m%d%H%M', returnStdout: true).trim()
         PATH = "${env.HOME}/bin:${env.PATH}"
     }
     
@@ -65,8 +64,8 @@ pipeline {
                 script {
                     withDockerRegistry(credentialsId: 'docker', toolName: 'docker') {
                         sh "docker build -t sap-frontend ."
-                        sh "docker tag sap-frontend gauriiitambe/sap-frontend:\${DATE}"
-                        sh "docker push gauriiitambe/sap-frontend:\${DATE}"
+                        sh "docker tag sap-frontend gauriiitambe/sap-frontend:latest"
+                        sh "docker push gauriiitambe/sap-frontend:latest"
                     }
                 }
             }
@@ -88,7 +87,7 @@ pipeline {
                 sh '''
                     docker stop frontend || true
                     docker rm frontend || true
-                    docker run -d --name frontend -p 80:80 gauriiitambe/sap-frontend:\${DATE}
+                    docker run -d --name frontend -p 80:80 gauriiitambe/sap-frontend:latest
                     sleep 5
                     curl -f http://localhost:80 || echo "App deployed - manual check required"
                 '''
