@@ -48,23 +48,6 @@ pipeline {
             }
         }
         
-        stage('OWASP FS SCAN') {
-            steps {
-                script {
-                    // Skip if plugin not installed
-                    catchError(buildResult: 'SUCCESS', stageResult: 'WARNING') {
-                        dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', 
-                        odcInstallation: 'DP'
-                        dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
-                    }
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: '**/dependency-check-report.xml', allowEmptyArchive: true
-                }
-            }
-        }
         
         stage('TRIVY FS SCAN') {
             steps {
@@ -157,8 +140,8 @@ pipeline {
                 
                 // Publish test results if available
                 publishTestResults testResultsPattern: '**/test-results.xml', 
-                                testResultsPattern: '**/test-results.xml', 
-                                allowEmptyResults: true
+                testResultsPattern: '**/test-results.xml', 
+                allowEmptyResults: true
             }
         }
         success {

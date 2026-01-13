@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
       - name: sap-classes
-        image: gauriiitambe/sap-frontend:{date} # The container image to use
+        image: gauriiitambe/sap-frontend:latest # The container image to use
         ports:
         - containerPort: 80 # The port your container exposes
