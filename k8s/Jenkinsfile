@@ -133,14 +133,6 @@ pipeline {
                     docker stop frontend || true
                     docker rm frontend || true
                 '''
-                
-                // Archive all reports
-                archiveArtifacts artifacts: '*.txt, **/dependency-check-report.xml', allowEmptyArchive: true
-                
-                // Publish test results if available
-                publishTestResults testResultsPattern: '**/test-results.xml', 
-                testResultsPattern: '**/test-results.xml', 
-                allowEmptyResults: true
             }
         }
         success {
