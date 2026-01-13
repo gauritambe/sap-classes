@@ -24,10 +24,10 @@ pipeline{
             steps {
                 script {
                     sh '''
-                        # Install Trivy if not present
-                        if ! command -v trivy &> /dev/null; then
-                            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
-                        fi
+                        mkdir -p ~/bin                       # jenkins CAN write here
+                        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ~/bin
+                        export PATH=~/bin:$PATH
+                        trivy --version   
                     '''
                 }
             }
