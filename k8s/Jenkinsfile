@@ -114,10 +114,10 @@ pipeline {
                             kubectl rollout status deployment/sap-classes -n sap-classes --timeout=300s
                             
                             # Port forward in background
-                            kubectl port-forward service/sap-classes -n sap-classes 8080:80 &
+                            kubectl port-forward service/sap-classes -n sap-classes --address localhost 8000:80 &
                             echo $! > port_forward.pid
                             sleep 5
-                            curl -f http://localhost:8080 || echo "Minikube deployment complete"
+                            curl -f http://localhost:8000 || echo "Minikube deployment complete"
                         '''
                     }
                 }
@@ -137,7 +137,7 @@ pipeline {
         }
         success {
             echo "🎉 Pipeline completed successfully!"
-            echo "🌐 Frontend: http://localhost:8080"
+            echo "🌐 Frontend: http://localhost:8000"
             echo "📦 Docker Image: gauriiitambe/sap-frontend:latest"
         }
         failure {
