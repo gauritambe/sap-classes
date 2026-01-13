@@ -73,8 +73,9 @@ pipeline{
                         kubectl apply -f ./k8s/deployment.yml 
                         kubectl apply -f ./k8s/service.yml 
                         kubectl get pods -w  # Wait and verify
-                        sudo -E kubectl port-forward service/sap-classes -n sap-classes 80:80 && echo "pass"
-                    '''
+                        kubectl port-forward service/sap-classes -n sap-classes 80:80 &
+                        echo "Port forwarding started on 80"                    
+                        '''
                 }
             }
         }
