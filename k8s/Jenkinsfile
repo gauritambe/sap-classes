@@ -17,9 +17,22 @@ pipeline{
         }
         stage('Install Dependencies') {
             steps {
-                sh "npm ci"
+                sh "npm install"
             }
         }
+        stage('Install Tools') {
+            steps {
+                script {
+                    sh '''
+                        # Install Trivy if not present
+                        if ! command -v trivy &> /dev/null; then
+                            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+                        fi
+                    '''
+                }
+            }
+        }
+
         stage('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP'
@@ -60,7 +73,7 @@ pipeline{
                         kubectl apply -f ./k8s/deployment.yml 
                         kubectl apply -f ./k8s/service.yml 
                         kubectl get pods -w  # Wait and verify
-                        sudo -E kubectl port-forward service/sap-classes -n sap-classes 80:80
+                        sudo -E kubectl port-forward service/sap-classes -n sap-classes 80:80 && echo "pass"
                     '''
                 }
             }
