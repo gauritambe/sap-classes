@@ -145,8 +145,8 @@ pipeline {
         }
         success {
             echo "🎉 Pipeline completed successfully!"
-            echo "🌐 Frontend: http://192.168.251.30"
-            echo "📦 Docker Image: gauriiitambe/sap-frontend:${DATE}"
+            echo "🌐 Frontend: http://localhost:8080"
+            echo "📦 Docker Image: gauriiitambe/sap-frontend:latest"
         }
         failure {
             echo "❌ Pipeline failed. Check archived reports."
