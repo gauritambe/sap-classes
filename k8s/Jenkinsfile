@@ -73,7 +73,7 @@ pipeline {
         
         stage('TRIVY Image SCAN') {
             steps {
-                sh "~/bin/trivy image --severity HIGH,CRITICAL --exit-code 0 --no-progress gauriiitambe/sap-frontend:\${DATE} > trivyimage.txt"
+                sh "~/bin/trivy image --severity HIGH,CRITICAL --exit-code 0 --no-progress gauriiitambe/sap-frontend:latest > trivyimage.txt"
             }
             post {
                 always {
