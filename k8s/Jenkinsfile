@@ -12,7 +12,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'dev', url: 'https://github.com/gauritambe/sap-classes.git'
+                git branch: 'dev', credentialsId: 'github-sap-classes', url: 'https://github.com/gauritambe/sap-classes.git'
             }
         }
         stage('Install Dependencies') {
