@@ -7,7 +7,7 @@ spec:
   selector:
     matchLabels:
       app: sap-classes
-  replicas: 1 # Tells Kubernetes to run 3 instances of your app
+  replicas: 1 # Tells Kubernetes to run 1 instances of your app
   template:
     metadata:
       labels:

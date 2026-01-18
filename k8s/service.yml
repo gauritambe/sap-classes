@@ -6,7 +6,7 @@ metadata:
 
 spec:
   selector:
-    app: sap-classes # Selects the pods with the label "app: nginx"
+    app: sap-classes 
   type: ClusterIP # Exposes the service on a static port on each Node's IP
   ports:
   - port: 80

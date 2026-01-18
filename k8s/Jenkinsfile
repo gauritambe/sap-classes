@@ -1,12 +1,7 @@
 pipeline {
     agent any
     
-    environment {
-        PATH = "${env.HOME}/bin:${env.PATH}"
-    }
-    
     tools {
-        jdk 'jdk'
         nodejs 'nodejs25'
     }
     
@@ -31,31 +26,15 @@ pipeline {
             }
         }
         
-        stage('Install Tools') {
-            steps {
-                script {
-                    sh '''
-                        # Install Trivy to user directory
-                        mkdir -p ~/bin
-                        if ! ~/bin/trivy version >/dev/null 2>&1; then
-                            curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b ~/bin v0.68.2
-                        fi
-                        ~/bin/trivy --version
-                                               
-                    '''
-                }
-            }
-        }
-        
         
         stage('TRIVY FS SCAN') {
             steps {
-                sh "~/bin/trivy fs --severity HIGH,CRITICAL --exit-code 0 --no-progress . > trivyfs.txt"
+                sh "/usr/bin/trivy fs --severity HIGH,CRITICAL --exit-code 0 --no-progress . > trivyfs.txt"
             }
             post {
                 always {
-                    archiveArtifacts 'trivyfs.txt'
-                }
+			archiveArtifacts 'trivyfs.txt'
+		}
             }
         }
         
@@ -73,24 +52,12 @@ pipeline {
         
         stage('TRIVY Image SCAN') {
             steps {
-                sh "~/bin/trivy image --severity HIGH,CRITICAL --exit-code 0 --no-progress gauriiitambe/sap-frontend:latest > trivyimage.txt"
+                sh "/usr/bin/trivy image --severity HIGH,CRITICAL --exit-code 0 --no-progress gauriiitambe/sap-frontend:latest > trivyimage.txt"
             }
             post {
                 always {
                     archiveArtifacts 'trivyimage.txt'
                 }
-            }
-        }
-        
-        stage('Deploy to Container') {
-            steps {
-                sh '''
-                    docker stop frontend || true
-                    docker rm frontend || true
-                    docker run -d --name frontend -p 80:80 gauriiitambe/sap-frontend:latest
-                    sleep 5
-                    curl -f http://localhost:80 || echo "App deployed - manual check required"
-                '''
             }
         }
         
@@ -105,19 +72,19 @@ pipeline {
                 script {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         sh '''
-                            # Deploy to Kubernetes
+                            #enable addons
+			    minikube addons enable ingress
+
+			    # Deploy to Kubernetes
                             kubectl apply -f ./k8s/namespace.yml || kubectl create -f ./k8s/namespace.yml
                             kubectl apply -f ./k8s/deployment.yml
                             kubectl apply -f ./k8s/service.yml
+                            kubectl apply -f ./k8s/ingress.yml
                             
                             # Wait for deployment
                             kubectl rollout status deployment/sap-classes -n sap-classes --timeout=300s
                             
-                            # Port forward in background
-                            kubectl port-forward service/sap-classes -n sap-classes --address localhost 8000:80 &
-                            echo $! > port_forward.pid
-                            sleep 5
-                            curl -f http://localhost:8000 || echo "Minikube deployment complete"
+                            curl -f http://sap-classes || echo "Minikube deployment complete"
                         '''
                     }
                 }
@@ -126,15 +93,6 @@ pipeline {
     }
     
     post {
-        always {
-            script {
-                // Cleanup old containers
-                sh '''
-                    docker stop frontend || true
-                    docker rm frontend || true
-                '''
-            }
-        }
         success {
             echo "🎉 Pipeline completed successfully!"
             echo "🌐 Frontend: http://localhost:8000"
