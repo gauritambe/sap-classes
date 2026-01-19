@@ -73,9 +73,9 @@ pipeline {
                     catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
                         sh '''
                             #enable addons
-			    minikube addons enable ingress
+                            minikube addons enable ingress
 
-			    # Deploy to Kubernetes
+                            # Deploy to Kubernetes
                             kubectl apply -f ./k8s/namespace.yml || kubectl create -f ./k8s/namespace.yml
                             kubectl apply -f ./k8s/deployment.yml
                             kubectl apply -f ./k8s/service.yml
@@ -84,7 +84,7 @@ pipeline {
                             # Wait for deployment
                             kubectl rollout status deployment/sap-classes -n sap-classes --timeout=300s
                             
-                            curl -f http://sap-classes || echo "Minikube deployment complete"
+                            curl -f http://sap-classes:80/ || echo "Minikube deployment complete"
                         '''
                     }
                 }
@@ -95,7 +95,7 @@ pipeline {
     post {
         success {
             echo "🎉 Pipeline completed successfully!"
-            echo "🌐 Frontend: http://localhost:8000"
+            echo "🌐 Frontend: http://sap-classes:80/"
             echo "📦 Docker Image: gauriiitambe/sap-frontend:latest"
         }
         failure {
