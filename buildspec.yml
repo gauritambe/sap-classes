@@ -5,9 +5,14 @@ env:
     IMG_NAME: "sap-frontend"
 
 phases:
+  pre-build:
+    commands:
+      - docker build -t $IMG_NAME . 
+
   build:
     commands:
-      - sudo docker build -t $IMG_NAME . 
+      - docker images
+      - docker run -d --name sap -p 80:80 $IMG_NAME
 
 artifacts:
   files:
