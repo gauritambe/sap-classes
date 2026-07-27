@@ -3,12 +3,19 @@ version: 0.2
 phases:
   pre_build:
     commands:
+      - echo "Logging in / validating Docker build"
       - docker build -t sap-frontend .
   build:
     commands:
-      - docker images
-      - docker run -d --name sap -p 80:80 sap-frontend
+      - echo "Build validated on `date`"
+  post_build:
+    commands:
+      - echo "Cleaning up local image"
+      - docker rmi sap-frontend || true
 
 artifacts:
   files:
     - '**/*'
+  exclude-paths:
+    - node_modules/**
+    - .git/**
