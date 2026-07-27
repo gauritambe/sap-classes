@@ -1,18 +1,13 @@
 version: 0.2
 
-env:
-  variables:
-    IMG_NAME: "sap-frontend"
-
 phases:
   pre_build:
     commands:
-      - docker build -t $IMG_NAME . 
-
+      - docker build -t sap-frontend .
   build:
     commands:
       - docker images
-      - docker run -d --name sap -p 80:80 $IMG_NAME
+      - docker run -d --name sap -p 80:80 sap-frontend
 
 artifacts:
   files:
