@@ -5,7 +5,7 @@ env:
     IMG_NAME: "sap-frontend"
 
 phases:
-  pre-build:
+  pre_build:
     commands:
       - docker build -t $IMG_NAME . 
 
