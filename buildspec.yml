@@ -1,16 +1,13 @@
 version: 0.2
- 
-phases:
-  install:
-    runtime-versions:
-      nodejs: 20
-    commands:
-      - npm install serve
-      - npm install
 
+env:
+  variables:
+    IMG_NAME: "sap-frontend"
+
+phases:
   build:
     commands:
-      - npm run build
+      - sudo docker build -t $IMG_NAME . 
 
 artifacts:
   files:
