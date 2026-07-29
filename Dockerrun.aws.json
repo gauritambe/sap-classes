@@ -1,7 +1,7 @@
 {
  "AWSEBDockerrunVersion": "1",
  "Image": {
-   "Name": "390402576401.dkr.ecr.ap-south-1.amazonaws.com/sap-frontend:latest",
+   "Name": "<acc_id>.dkr.ecr.ap-south-1.amazonaws.com/sap-frontend:latest",
    "Update": "true"
  },
  "Ports": [
