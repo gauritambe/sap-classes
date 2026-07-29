@@ -3,6 +3,7 @@ node_modules
 .idea
 package-lock.json
 /build
+/build/node_modules
 .vscode/
 .idea/
 vite.config.*s.*

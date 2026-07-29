@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sap-classes
+  namespace: sap-classes
+spec:
+  selector:
+    matchLabels:
+      app: sap-classes
+  replicas: 1 # Tells Kubernetes to run 1 instances of your app
+  template:
+    metadata:
+      labels:
+        app: sap-classes
+    spec:
+      containers:
+      - name: sap-classes
+        image: gauriiitambe/sap-frontend:latest # The container image to use
+        ports:
+        - containerPort: 80 # The port your container exposes

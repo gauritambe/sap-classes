@@ -107,3 +107,5 @@ npm run build
 Built with ❤️ on Rocket.new
 
 You can check the documentation for CI/CD here [Document](https://docs.google.com/document/d/1LR7DRnNFfjju5niJW47o1mOWEP1JgRoNyyx6mssiM7M/edit?usp=sharing)
+
+Setup Infra using this Link [Infra](https://github.com/gauritambe/infra) --> Ansible required
