@@ -8,6 +8,5 @@
    {
      "ContainerPort": 80
    }
- ],
- "Command": "nginx -g daemon off"
+ ]
 }
