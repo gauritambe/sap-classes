@@ -1,21 +1,31 @@
 version: 0.2
 
+variables:
+  parameter-store:
+    AWS_ACCOUNT_ID: ACCOUNT_AWS_ID
+    AWS_DEFAULT_REGION: DEFAULT_AWS_REGION
+    IMAGE_REPO_NAME: IMAGE_REPO_NAME
+    IMAGE_TAG: IMAGE_TAG
+
 phases:
   pre_build:
     commands:
-      - echo "Logging in / validating Docker build"
-      - docker build -t sap-frontend .
+      - echo Logging in to Amazon ECR...
+      - ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+      - REPOSITORY_URI=${ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${IMAGE_REPO_NAME}
+      - aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${REPOSITORY_URI}
+
   build:
     commands:
-      - echo "Build validated on `date`"
+      - echo Build started on `date`
+      - docker build -t ${IMAGE_REPO_NAME}:${IMAGE_TAG} .
+      - docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
+
   post_build:
     commands:
-      - echo "Cleaning up local image"
-      - docker rmi sap-frontend || true
+      - echo Pushing Docker image...
+      - docker push ${REPOSITORY_URI}:${IMAGE_TAG}
 
 artifacts:
   files:
-    - '**/*'
-  exclude-paths:
-    - node_modules/**
-    - .git/**
+    - "**/*"
